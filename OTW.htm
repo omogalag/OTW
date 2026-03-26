@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="data:image/svg+xml,
+<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22>
+<text y=%22.9em%22 font-size=%2290%22>✅</text>
+</svg>">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Omar’s Teaching Workflow Tool</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe2ea;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --soft: #eef4ff;
+      --success: #166534;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 96px;
+    }
+
+    .activities {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fcfdff;
+    }
+
+    .activity-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .activity-check input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .primary:hover { background: var(--primary-hover); }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .emoji-btn {
+      background: var(--soft);
+      color: #1e3a8a;
+      min-width: 56px;
+    }
+
+    .output {
+      min-height: 260px;
+      white-space: pre-wrap;
+      background: #0f172a;
+      color: #e5eefc;
+      border-radius: 14px;
+      padding: 18px;
+      font-family: Consolas, Monaco, monospace;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+
+    .status {
+      margin-top: 12px;
+      color: var(--success);
+      font-weight: 700;
+      min-height: 20px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .activity-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="card">
+      <h1 style="display:flex; align-items:center; gap:10px;">
+  <span>✅</span>
+  <span>Omar’s Teaching Workflow Tool</span>
+</h1>
+      
+      <div class="grid">
+        <div>
+          <label for="dateMode">Date</label>
+          <select id="dateMode">
+            <option value="tomorrow">Tomorrow's Date</option>
+            <option value="current">Current Date</option>
+            <option value="custom">Custom Date</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="customDate">Custom Date</label>
+          <input type="date" id="customDate" />
+        </div>
+
+        <div>
+          <label for="week">Week</label>
+          <select id="week"></select>
+        </div>
+
+        <div>
+          <label for="term">Term</label>
+          <select id="term">
+            <option>First</option>
+            <option>Second</option>
+            <option>Third</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <label for="topic">Topic</label>
+        <input type="text" id="topic" placeholder="Write the class topic" />
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0;">Activities</h2>
+      <div id="activities" class="activities"></div>
+
+      <div class="buttons">
+        <button class="primary" id="copyBtn">Copy plan</button>
+        <button class="secondary" id="previewBtn">Preview</button>
+        <button class="secondary" id="clearBtn">Clear</button>
+      </div>
+      <div class="hint">Only checked activities will be included in the final text.</div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0;">Emoji shortcuts</h2>
+      <div class="buttons" id="emojiButtons"></div>
+      <div class="hint">Click an emoji to copy it instantly.</div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0;">Preview</h2>
+      <div id="output" class="output"></div>
+      <div id="status" class="status"></div>
+    </section>
+  </div>
+
+  <script>
+    const weekOptions = [
+      'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth',
+      'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh'
+    ];
+
+    const activityNames = [
+      'Warm-up', 'Homework', 'Feedback on', 'Vocabulary', 'Grammar',
+      'Speaking', 'Reading', 'Writing', 'Assignment'
+    ];
+
+    const emojis = ['✅', '❌', '🔗', '🇬🇧', '⚠️', '🔄', '📌', '📖', '🎧', '📝', '🗣️', '🧩', '💡', '🐸'];
+
+    const weekSelect = document.getElementById('week');
+    const activitiesWrap = document.getElementById('activities');
+    const emojiButtons = document.getElementById('emojiButtons');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+
+    weekOptions.forEach(week => {
+      const option = document.createElement('option');
+      option.value = week;
+      option.textContent = week;
+      weekSelect.appendChild(option);
+    });
+
+    activityNames.forEach((name, index) => {
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML = `
+        <label class="activity-check">
+          <input type="checkbox" id="check-${index}">
+          <span>${name}</span>
+        </label>
+        <input type="text" id="text-${index}" placeholder="Write ${name.toLowerCase()} details">
+      `;
+      activitiesWrap.appendChild(row);
+    });
+
+    emojis.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.className = 'emoji-btn';
+      btn.textContent = emoji;
+      btn.type = 'button';
+      btn.addEventListener('click', async () => {
+        await copyText(emoji);
+        setStatus(`Copied emoji: ${emoji}`);
+      });
+      emojiButtons.appendChild(btn);
+    });
+
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      output.textContent = buildPlan();
+      setStatus('Preview updated.');
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const text = buildPlan();
+      output.textContent = text;
+      await copyText(text);
+      setStatus('Class plan copied to the clipboard.');
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('dateMode').value = 'tomorrow';
+      document.getElementById('customDate').value = '';
+      document.getElementById('week').selectedIndex = 0;
+      document.getElementById('term').selectedIndex = 0;
+      document.getElementById('topic').value = '';
+      activityNames.forEach((_, index) => {
+        document.getElementById(`check-${index}`).checked = false;
+        document.getElementById(`text-${index}`).value = '';
+      });
+      output.textContent = '';
+      setStatus('Form cleared.');
+    });
+
+    function getSelectedDate() {
+      const mode = document.getElementById('dateMode').value;
+      const custom = document.getElementById('customDate').value;
+      const now = new Date();
+      now.setHours(12, 0, 0, 0);
+
+      if (mode === 'current') return now;
+      if (mode === 'tomorrow') {
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return tomorrow;
+      }
+      if (custom) {
+        const [year, month, day] = custom.split('-').map(Number);
+        return new Date(year, month - 1, day, 12, 0, 0, 0);
+      }
+      return now;
+    }
+
+    function getOrdinal(n) {
+      if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
+      switch (n % 10) {
+        case 1: return `${n}st`;
+        case 2: return `${n}nd`;
+        case 3: return `${n}rd`;
+        default: return `${n}th`;
+      }
+    }
+
+    function formatDate(date) {
+      const day = getOrdinal(date.getDate());
+      const month = date.toLocaleString('en-US', { month: 'long' });
+      const year = date.getFullYear();
+      return `${day} of ${month}, ${year}`;
+    }
+
+    function buildPlan() {
+      const date = formatDate(getSelectedDate());
+      const week = document.getElementById('week').value;
+      const term = document.getElementById('term').value;
+      const topic = document.getElementById('topic').value.trim() || '—';
+
+      const selectedActivities = activityNames
+        .map((name, index) => ({
+          name,
+          checked: document.getElementById(`check-${index}`).checked,
+          text: document.getElementById(`text-${index}`).value.trim()
+        }))
+        .filter(item => item.checked)
+        .map(item => `        ☐ ${item.name}: ${item.text || ' '}`);
+
+      const activityBlock = selectedActivities.length
+        ? selectedActivities.join('\n')
+        : '        ☐ No activities selected.';
+
+      return [
+        `📅 Date: ${date}`,
+        `🗂️ Week: ${week}`,
+        `📚 Term: ${term}`,
+        `🧠 Topic: ${topic}`,
+        `✏️ Activities:`,
+        activityBlock
+      ].join('\n');
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (error) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+    }
+
+    function setStatus(message) {
+      status.textContent = message;
+      setTimeout(() => {
+        if (status.textContent === message) status.textContent = '';
+      }, 2500);
+    }
+
+    output.textContent = buildPlan();
+  </script>
+</body>
+</html>
