@@ -105,11 +105,56 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
+      margin-bottom: 0;
     }
 
     .activity-check input {
       width: 18px;
       height: 18px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    .switch input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(22px);
     }
 
     .buttons {
@@ -181,10 +226,10 @@
 <body>
   <div class="app">
     <section class="card">
-      <h1 style="display:flex; align-items:center; gap:10px;">
-  <span>✅</span>
-  <span>Omar’s Teaching Workflow Tool</span>
-</h1>
+      <h1 style="display:flex; align-items:center; justify-content:center; gap:10px; text-align:center;">
+        <span>✅</span>
+        <span>Omar’s Teaching Workflow Tool</span>
+      </h1>
       
       <div class="grid">
         <div>
@@ -235,15 +280,15 @@
     </section>
 
     <section class="card">
-      <h2 style="margin-top:0;">Emoji shortcuts</h2>
-      <div class="buttons" id="emojiButtons"></div>
-      <div class="hint">Click an emoji to copy it instantly.</div>
-    </section>
-
-    <section class="card">
       <h2 style="margin-top:0;">Preview</h2>
       <div id="output" class="output"></div>
       <div id="status" class="status"></div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0;">Emoji shortcuts</h2>
+      <div class="buttons" id="emojiButtons"></div>
+      <div class="hint">Click an emoji to copy it instantly.</div>
     </section>
   </div>
 
@@ -278,7 +323,10 @@
       row.className = 'activity-row';
       row.innerHTML = `
         <label class="activity-check">
-          <input type="checkbox" id="check-${index}">
+          <label class="switch">
+            <input type="checkbox" id="check-${index}">
+            <span class="slider"></span>
+          </label>
           <span>${name}</span>
         </label>
         <input type="text" id="text-${index}" placeholder="Write ${name.toLowerCase()} details">
